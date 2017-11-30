@@ -1,5 +1,5 @@
 /**
- * This class is for testing out classes.
+ * This class is for testing out classes
  * @author zyud
  *
  */
@@ -21,10 +21,10 @@ public class MainTester {
         
         verizon.printAllProjects();
         
-        verizon.newTask("Destroy net neutrality");
+        verizon.newTask(30, "Destroy net neutrality");
         
         // ProjectId #2 is "Fresh poop delivery system"
-        verizon.newTask("Harvest poop", 2);
+        verizon.newTask(10, "Harvest poop", 2);
         
         // Adding Ajit Pai to project "Fresh Poop Delivery System"
         verizon.addEmployeeToProject(1, 2);

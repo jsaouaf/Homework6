@@ -50,22 +50,24 @@ public class Company {
     
     /**
      * Method for creating a new task without specifying project.
+     * @param hours expected hours for completion
      * @param name task name
      */
-    public void newTask(String name) {
+    public void newTask(int hours, String name) {
         taskIdTally++;
-        Task task = new Task(taskIdTally, name);
+        Task task = new Task(taskIdTally, name, hours);
         taskIdMap.put(taskIdTally, task);
     }
     
     /**
      * Method for creating a new task with a specified project.
+     * @param hours expected hours for completion
      * @param name task name
      * @param projectId
      */
-    public void newTask(String name, int projectId) {
+    public void newTask(int hours, String name, int projectId) {
         taskIdTally++;
-        Task task = new Task(taskIdTally, name);
+        Task task = new Task(taskIdTally, name, hours);
         taskIdMap.put(taskIdTally, task);
         task.setProjectId(projectId);
         projectIdMap.get(projectId).addTask(taskIdTally);

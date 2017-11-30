@@ -20,14 +20,18 @@ public class Task {
     private LocalDate actualEndDate;
     private LocalDate deadline;
     private String notes;
+    private int estimatedHours; // before completion, estimate the number of hours it will take
+    private int actualHours; // after completion, how many hours did it take?
+    private boolean complete; // is it complete?
+    private String category; // what kind of task is it?
 
     /**
      * Constructor method for a task within a project.
      * @param taskId
      * @param taskName
-     * @param employeeId
+     * @param hours expected hours for completion of task
      */
-    public Task(int id, String name) {
+    public Task(int id, String name, int hours) {
         this.id = id;
         this.name = name;
         projectId = 0;
@@ -37,6 +41,8 @@ public class Task {
         actualEndDate = LocalDate.MAX;
         deadline = LocalDate.MAX;
         notes = new String();
+        estimatedHours = hours;
+        complete = false;
     }
 
     /**
@@ -134,4 +140,45 @@ public class Task {
         this.name = name;
         System.out.println("Task name updated to \"" + this.name + "\"");
     }
+    
+    public void completeTask(int hours) {
+    		complete = true;
+    		actualHours = hours;
+    }
+
+	/**
+	 * @return the estimatedHours
+	 */
+	public int getEstimatedHours() {
+		return estimatedHours;
+	}
+
+	/**
+	 * @return the hours it took to complete the task
+	 */
+	public int getActualHours() {
+		return actualHours;
+	}
+	
+	/**
+	 * Getter for whether the task has been marked as complete
+	 * @return true if complete, false if not
+	 */
+	public boolean isComplete() {
+		return complete;
+	}
+
+	/**
+	 * @return the category
+	 */
+	public String getCategory() {
+		return category;
+	}
+
+	/**
+	 * @param category the category to set
+	 */
+	public void setCategory(String category) {
+		this.category = category;
+	}
 }
