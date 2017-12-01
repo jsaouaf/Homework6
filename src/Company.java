@@ -154,4 +154,8 @@ public class Company {
     public LinkedHashMap<Integer, Task> getTaskIdMap(){
     		return taskIdMap;
     }
+    
+    public LinkedHashMap<Integer, Project> getProjectIdMap(){
+    		return projectIdMap;
+    }
 }
