@@ -146,4 +146,12 @@ public class Company {
             System.out.println("ID: " + id + ", Name: " + taskIdMap.get(id).getName());
         }
     }
+    
+    public LinkedHashMap<Integer, Employee> getEmployeeIdMap(){
+    		return employeeIdMap;
+    }
+    
+    public LinkedHashMap<Integer, Task> getTaskIdMap(){
+    		return taskIdMap;
+    }
 }
