@@ -1,9 +1,9 @@
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
 /**
- * This class performs analysis on a single employee
+ * This class performs analysis on a single employee. It tells how many hours they are currently assigned,
+ * how many in total they have completed, and gives the ratio of estimated hours to assigned hours.
  * @author jennifersaouaf
  *
  */
@@ -11,6 +11,7 @@ public class EmployeeAnalysis {
 	private Employee employee;
 	private Company company;
 	private LinkedHashMap<Integer, Task> taskIdMap;
+	LinkedHashSet<Integer> taskIds;
 	
 	/**
 	 * The constructor
@@ -20,6 +21,7 @@ public class EmployeeAnalysis {
 		employee = e;
 		company = new Company("This Company");
 		taskIdMap = company.getTaskIdMap();
+		taskIds = employee.getTasks();
 	}
 	
 	/**
@@ -27,7 +29,6 @@ public class EmployeeAnalysis {
 	 * @return the total hours of incomplete tasks
 	 */
 	public int getAssignedHours() {
-		LinkedHashSet<Integer> taskIds = employee.getTasks();
 		int hours = 0;
 		
 		for(Integer taskId: taskIds) {
@@ -42,6 +43,47 @@ public class EmployeeAnalysis {
 		return hours;
 	}
 	
+	/**
+	 * Returns the total number of hours the employee has completed on all tasks
+	 * @return the total number of actual hours worked on tasks
+	 */
+	public int getCompletedHours() {
+		int hours = 0;
+		
+		for(Integer taskId: taskIds) {
+			Task task = taskIdMap.get(taskId);
+			if(task.isComplete()) {
+				hours += task.getActualHours();
+			}
+		}
+		
+		return hours;
+	}
 	
+	/**
+	 * This returns the ratio of estimated hours to actual hours completed.
+	 * @return total estimated hours/total actual hours
+	 */
+	public double getEfficiency() {
+		int completedHours = getCompletedHours();
+		int estimatedHours = 0;
+		
+		for(Integer taskId: taskIds) {
+			Task task = taskIdMap.get(taskId);
+			if(task.isComplete()) {
+				estimatedHours += task.getEstimatedHours();
+			}
+		}
+		
+		return (double)estimatedHours/completedHours;
+	}
+	
+	/**
+	 * Setter for the employee to be analyzed
+	 * @param e employee
+	 */
+	public void changeEmployee(Employee e) {
+		employee = e;
+	}
 
 }
