@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 
@@ -6,7 +7,7 @@ import java.util.LinkedHashSet;
  * @author zyud
  *
  */
-public class Employee {
+public class Employee implements Serializable{
 
     private int id;
     private String name;

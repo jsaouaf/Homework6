@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 /**
@@ -13,7 +14,7 @@ import java.util.LinkedHashMap;
  *       etc.
  *       3. Finish documentation and adding in additional methods.
  */
-public class Company {
+public class Company implements Serializable{
     private String name;
     private int projectIdTally;
     private int employeeIdTally;

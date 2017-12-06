@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 
@@ -14,7 +15,7 @@ import java.util.HashSet;
  *       etc.)
  *       3. implement setter methods to project notes and task notes.
  */
-public class Project {
+public class Project implements Serializable{
 
     private int id;
     private String name;

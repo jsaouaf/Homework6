@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 
@@ -9,7 +10,7 @@ import java.util.HashSet;
  * TODO: Need to implement setter methods other than for employees and projects.
  * May not need setter methods for all variables.
  */
-public class Task {
+public class Task implements Serializable{
 
     private int id;
     private String name;
