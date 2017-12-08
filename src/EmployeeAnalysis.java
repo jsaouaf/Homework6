@@ -19,7 +19,7 @@ public class EmployeeAnalysis {
 	 */
 	public EmployeeAnalysis(Employee e) {
 		employee = e;
-		company = new Company("This Company");
+		company = Company.getInstance();
 		taskIdMap = company.getTaskIdMap();
 		taskIds = employee.getTasks();
 	}

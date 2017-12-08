@@ -10,12 +10,14 @@ import java.util.LinkedHashMap;
  * TODO: 1. ID generation system to be modified to generate unique IDs for projects,
  *       employees, and tasks. Right now they are too similar to one another and can
  *       get mixed up.
- *       2. throw exceptions for things like "employee not found", "project not founde"
+ *       2. throw exceptions for things like "employee not found", "project not found"
  *       etc.
  *       3. Finish documentation and adding in additional methods.
  */
 public class Company implements Serializable{
-    private String name;
+    private static Company companyInstance = new Company(); // singleton constructor for the company
+	
+	private String name;
     private int projectIdTally;
     private int employeeIdTally;
     private int taskIdTally;
@@ -27,14 +29,18 @@ public class Company implements Serializable{
     private LinkedHashMap<Integer, Employee> employeeIdMap;
     private LinkedHashMap<Integer, Task> taskIdMap;
 
-    public Company(String name) {
-        this.name = name;
+    // cannot instantiate this class; we only want one company
+    private Company() {
         projectIdTally = 0;
         employeeIdTally = 0;
         taskIdTally = 0;
         projectIdMap = new LinkedHashMap<>();
         employeeIdMap = new LinkedHashMap<>();
         taskIdMap = new LinkedHashMap<>();
+    }
+    
+    public static Company getInstance() {
+    		return companyInstance;
     }
     
     public void newProject(String name) {
@@ -158,5 +164,9 @@ public class Company implements Serializable{
     
     public LinkedHashMap<Integer, Project> getProjectIdMap(){
     		return projectIdMap;
+    }
+    
+    public void setName(String name) {
+    		this.name = name;
     }
 }

@@ -12,7 +12,7 @@ import java.io.ObjectOutputStream;
 public class MainTester {
 
     public static void main(String[] args) {
-        Company verizon = new Company("Verizon Wireless");
+        Company verizon = Company.getInstance();
         verizon.newEmployee("Ajit Pai");
         verizon.newEmployee("Joseph Goebbels");
         verizon.newEmployee("Beelzebub");
