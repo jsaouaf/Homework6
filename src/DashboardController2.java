@@ -33,7 +33,7 @@ public class DashboardController2 {
 	private void initialize(){
 		ArrayList<String> projectIds = new ArrayList<String>();
 		projectIds.add("9120983");
-		projects = Company.getInstance().getProjects();
+		projects = Company.getInstance().getProjectIdMap();
 		for (Integer i : projects.keySet()){
 			projectIds.add(Integer.toString(i));
 		}
