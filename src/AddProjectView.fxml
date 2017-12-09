@@ -26,12 +26,12 @@
             <Label prefHeight="27.0" prefWidth="147.0" text="Target End Date:" GridPane.rowIndex="2" />
             <Label text="Deadline" GridPane.rowIndex="3" />
             <Label text="Label" GridPane.rowIndex="4" />
-            <TextField prefHeight="31.0" prefWidth="123.0" GridPane.columnIndex="1">
+            <TextField fx:id="projectName" prefHeight="31.0" prefWidth="123.0" GridPane.columnIndex="1">
                <padding>
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </padding>
             </TextField>
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <TextField fx:id="startDate" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -39,12 +39,12 @@
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </padding>
             </TextField>
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <TextField fx:id="targetEndDate" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <padding>
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </padding>
             </TextField>
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <TextField fx:id="deadline" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <padding>
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </padding>
