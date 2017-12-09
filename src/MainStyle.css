@@ -3,8 +3,11 @@
     -fx-text-fill: white;
 }
 
-.list-cell:even { /* <=== changed to even */
+.list-cell { /* <=== can change to even for stripes */
     -fx-background-color: white;
+    -fx-font-size: 15px;
+    -fx-font-family: "Helvetica";
+    -fx-text-fill: rgb(0, 30, 128);
 }
 
 .list-cell:filled:hover {
