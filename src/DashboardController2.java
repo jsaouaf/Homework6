@@ -42,13 +42,18 @@ public class DashboardController2 {
 	@FXML
 	private void initialize(){
 		ArrayList<String> projectIds = new ArrayList<String>();
-		//testing adding a project to see if it will display
-		projectIds.add("9120983");
+
 		projects = Company.getInstance().getProjectIdMap();
 		for (Integer i : projects.keySet()){
 			projectIds.add(Integer.toString(i));
 		}
-		ObservableList<String> names = FXCollections.observableArrayList(projectIds);
+
+		ArrayList<String> projectNames = new ArrayList<String>();
+		for (Integer i: projects.keySet()){
+			projectNames.add(projects.get(i).getName() + " (ID: " + i + ")");
+		}
+
+		ObservableList<String> names = FXCollections.observableArrayList(projectNames);
 		projectListView.setItems(names);
 
 		projectListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -109,7 +114,7 @@ public class DashboardController2 {
 		Parent root = FXMLLoader.load(getClass().getResource("NewTaskView.fxml"));
 		Scene scene = new Scene(root);
 		primaryStage.setScene(scene);
-		
+
 		primaryStage.initModality(Modality.APPLICATION_MODAL);
 		primaryStage.initOwner(newTask.getScene().getWindow());
 		primaryStage.showAndWait();
