@@ -16,17 +16,17 @@
          </image>
       </ImageView>
       <Label layoutX="30.0" layoutY="80.0" text="Projects" />
-      <Button layoutX="23.0" layoutY="439.0" mnemonicParsing="false" text="Manage Employees" />
-      <Button layoutX="403.0" layoutY="72.0" mnemonicParsing="false" onAction="#addProjectClicked" text="Add Project">
+      <Button layoutX="30.0" layoutY="439.0" mnemonicParsing="false" onAction="#manageEmployeesClicked" text="Manage Employees" />
+      <Button layoutX="403.0" layoutY="75.0" mnemonicParsing="false" onAction="#addProjectClicked" text="Add Project">
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding></Button>
-      <Button layoutX="502.0" layoutY="440.0" mnemonicParsing="false" text="View Company Analysis">
+      <Button layoutX="558.0" layoutY="439.0" mnemonicParsing="false" text="View Company Analysis">
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding></Button>
       <ListView fx:id="projectListView" layoutX="30.0" layoutY="114.0" prefHeight="305.0" prefWidth="148.0" />
-      <GridPane layoutX="220.0" layoutY="127.0" prefHeight="150.0" prefWidth="269.0">
+      <GridPane layoutX="220.0" layoutY="115.0" prefHeight="150.0" prefWidth="269.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="179.0" minWidth="10.0" prefWidth="159.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="114.0" minWidth="10.0" prefWidth="110.0" />
@@ -94,25 +94,27 @@
          </children>
       </GridPane>
       <Label layoutX="280.0" layoutY="80.0" text="Project Summary" />
-      <Button layoutX="220.0" layoutY="267.0" mnemonicParsing="false" onAction="#addTaskClicked" text="Add Task" />
-      <Button layoutX="220.0" layoutY="340.0" mnemonicParsing="false" onAction="#addEmployeeClicked" text="Add Employee" />
+      <Button layoutX="220.0" layoutY="310.0" mnemonicParsing="false" onAction="#addTaskClicked" text="Add Task" />
+      <Button layoutX="220.0" layoutY="408.0" mnemonicParsing="false" onAction="#addEmployeeClicked" text="Add Employee" />
       <AnchorPane layoutX="513.0" layoutY="14.0" prefHeight="256.0" prefWidth="200.0">
          <children>
             <Label layoutX="14.0" layoutY="14.0" text="Tasks" />
-            <ListView layoutX="12.0" layoutY="42.0" prefHeight="200.0" prefWidth="188.0" />
-            <Button fx:id="newTask" layoutX="117.0" layoutY="-5.0" mnemonicParsing="false" onAction="#newTaskClicked" text="New Task">
+            <ListView fx:id="tasksListView" layoutX="12.0" layoutY="42.0" prefHeight="200.0" prefWidth="188.0" />
+            <Button fx:id="newTask" layoutX="129.0" layoutY="-1.0" mnemonicParsing="false" onAction="#newTaskClicked" text="New Task">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
             </Button>
          </children>
       </AnchorPane>
-      <TextField fx:id="employeeIdToAdd" layoutX="382.0" layoutY="340.0" prefHeight="39.0" prefWidth="122.0" promptText="Employee ID" />
-      <TextField fx:id="taskIdToAdd" layoutX="384.0" layoutY="267.0" prefHeight="39.0" prefWidth="122.0" promptText="Task ID" />
-      <ImageView fitHeight="31.0" fitWidth="177.0" layoutX="205.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="31.0" fitWidth="177.0" layoutX="205.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Dashboard.png" />
          </image>
       </ImageView>
+      <ComboBox fx:id="taskBox" layoutX="328.0" layoutY="310.0" prefWidth="150.0" promptText="Choose task" />
+      <ComboBox fx:id="employeeBox" layoutX="328.0" layoutY="408.0" prefWidth="150.0" promptText="Choose employee" />
+      <Label layoutX="525.0" layoutY="264.0" text="Estimated Hours:" />
+      <Label fx:id="taskHoursLbl" layoutX="658.0" layoutY="264.0" text="Label" visible="false" />
    </children>
 </AnchorPane>

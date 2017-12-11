@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="521.0" prefWidth="608.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="EmployeeDashboardController">
+<AnchorPane prefHeight="521.0" prefWidth="608.0" stylesheets="@MainStyle.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="EmployeeDashboardController">
    <children>
       <ListView fx:id="employeeListView" layoutY="52.0" prefHeight="387.0" prefWidth="146.0" AnchorPane.bottomAnchor="82.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="462.0" AnchorPane.topAnchor="52.0" />
       <Button layoutX="204.0" layoutY="467.0" mnemonicParsing="false" onAction="#addEmployeeClicked" text="Add Employee" />
