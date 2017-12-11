@@ -2,8 +2,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import com.sun.xml.internal.ws.org.objectweb.asm.Label;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,26 +10,26 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 /**
- * This class controls EmployeeDashboard.fxml. 
- * It sets the initial state and defines behavior for clicking the buttons
+ * This class controls EmployeeDashboard.fxml. It defines behavior for clicking the buttons
  * @author jennifersaouaf
  *
  */
 public class EmployeeDashboardController {
-	private Company company = Company.getInstance();
-	private LinkedHashMap<Integer, Employee> employees;
 	private ArrayList<String> employeeNames = new ArrayList<String>();
-//	private ArrayList<String> employeeIds = new ArrayList<String>();
-
+	private ArrayList<String> employeeIds = new ArrayList<String>();
+	private LinkedHashMap<Integer, Employee> employees;
+	private Company company = Company.getInstance();
+	
 	@FXML
 	private ListView<String> employeeListView;
-//	@FXML
-//	private ListView<String> employeeId;
+	@FXML
+	private ListView<String> idListView;
 	@FXML
 	private TextField employeeName;
 	@FXML
@@ -39,29 +37,27 @@ public class EmployeeDashboardController {
 	@FXML
 	private Label assignedHours;
 	@FXML
-	private Label completedHours;
-	@FXML
-	private Label efficiency;
+	private Label completedHours;	
 	
 	/**
 	 * This method sets the initial state with the employee names displayed
 	 */
-//	@FXML
-//	private void initialize() {
-//		company.newEmployee("Jane");
-//		company.newEmployee("Joe");
-//		employees = Company.getInstance().getEmployeeIdMap();
-//		for (Integer i : employees.keySet()){
-////			employeeIds.add(Integer.toString(i));
-//			employeeNames.add(employees.get(i).getName());
-//		}
-//		ObservableList<String> names = FXCollections.observableArrayList(employeeNames);
-////		ObservableList<String> ids = FXCollections.observableArrayList(employeeIds);
-//		employeeListView.setItems(names);
-////		employeeId.setItems(ids);
-//		
-//		//how to display info based on clicking?
-//	}
+	@FXML
+	private void initialize() {
+		company.newEmployee("Jane");
+		company.newEmployee("Joe");
+		employees = Company.getInstance().getEmployeeIdMap();
+		for (Integer i : employees.keySet()){
+			employeeIds.add(Integer.toString(i));
+			employeeNames.add(employees.get(i).getName());
+		}
+		ObservableList<String> names = FXCollections.observableArrayList(employeeNames);
+		ObservableList<String> ids = FXCollections.observableArrayList(employeeIds);
+		employeeListView.setItems(names);
+		idListView.setItems(ids);
+		
+		//how to display info based on clicking?
+	}
 	
 	/**
 	 * When the Add Employee button is clicked, an employee is added to the company 
@@ -70,9 +66,17 @@ public class EmployeeDashboardController {
 	 */
 	public void addEmployeeClicked(ActionEvent event) {
 		company.newEmployee(employeeName.getText());
-		employeeNames.add(employeeName.getText());
+		employeeIds.clear();
+		employeeNames.clear();
+		employees = Company.getInstance().getEmployeeIdMap();
+		for (Integer i : employees.keySet()){
+			employeeIds.add(Integer.toString(i));
+			employeeNames.add(employees.get(i).getName());
+		}
 		ObservableList<String> names = FXCollections.observableArrayList(employeeNames);
+		ObservableList<String> ids = FXCollections.observableArrayList(employeeIds);
 		employeeListView.setItems(names);
+		idListView.setItems(ids);
 	}
 
 	/**
