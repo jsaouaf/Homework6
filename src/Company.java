@@ -174,7 +174,4 @@ public class Company implements Serializable{
     		return this.name;
     }
 
-    public LinkedHashMap<Integer, Project> getProjects() {
-    		return this.projectIdMap;
-    }
 }
