@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 /**
  * This class controls EmployeeDashboard.fxml. It defines behavior for clicking the buttons
  * @author jennifersaouaf
- *
+ * TODO: Display projects and tasks when an employee id is clicked
  */
 public class EmployeeDashboardController {
 	private ArrayList<String> employeeNames = new ArrayList<String>();
@@ -37,10 +37,13 @@ public class EmployeeDashboardController {
 	@FXML
 	private Label assignedHours;
 	@FXML
-	private Label completedHours;	
+	private Label completedHours;
+	@FXML
+	private Label efficiency;
 	
 	/**
 	 * This method sets the initial state with the employee names displayed
+	 * When an employee ID is clicked, it displays their name, assigned hours, completed hours, and efficiency.
 	 */
 	@FXML
 	private void initialize() {
@@ -56,7 +59,25 @@ public class EmployeeDashboardController {
 		employeeListView.setItems(names);
 		idListView.setItems(ids);
 		
-		//how to display info based on clicking?
+		// when an ID is clicked, display data for that employee
+		idListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			Employee employee = employees.get(Integer.parseInt(newValue));
+			EmployeeAnalysis ea = new EmployeeAnalysis(employee);
+			String nameText = employee.getName();
+			String assignedHoursText = Integer.toString(ea.getAssignedHours());
+			String completedHoursText = Integer.toString(ea.getCompletedHours());
+			String efficiencyText = Double.toString(ea.getEfficiency());
+
+			name.setText(nameText);
+			assignedHours.setText(assignedHoursText);
+			completedHours.setText(completedHoursText);
+			efficiency.setText(efficiencyText);
+
+			name.setVisible(true);
+			assignedHours.setVisible(true);
+			completedHours.setVisible(true);
+			efficiency.setVisible(true);
+		});
 	}
 	
 	/**
@@ -66,12 +87,12 @@ public class EmployeeDashboardController {
 	 */
 	public void addEmployeeClicked(ActionEvent event) {
 		company.newEmployee(employeeName.getText());
-		employeeIds.clear();
-		employeeNames.clear();
+		employeeNames.add(employeeName.getText());
+		
 		employees = Company.getInstance().getEmployeeIdMap();
 		for (Integer i : employees.keySet()){
-			employeeIds.add(Integer.toString(i));
-			employeeNames.add(employees.get(i).getName());
+			if(!employeeIds.contains(Integer.toString(i)))
+				employeeIds.add(Integer.toString(i));
 		}
 		ObservableList<String> names = FXCollections.observableArrayList(employeeNames);
 		ObservableList<String> ids = FXCollections.observableArrayList(employeeIds);
