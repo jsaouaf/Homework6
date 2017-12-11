@@ -26,15 +26,22 @@
     -fx-font-size: 12px;
     -fx-font-family: "Helvetica";
     -fx-base: rgb(179, 255, 255);
-    -fx-background: rgb(204, 238, 255);
+    -fx-background: white;
 }
 
 .button {
-    -fx-text-fill: white;
+	-fx-background-color: 
+        #a6b5c9,
+        linear-gradient(#303842 0%, #3e5577 20%, #375074 100%),
+        linear-gradient(#768aa5 0%, #849cbb 5%, #5877a2 50%, #486a9a 51%, #4a6c9b 100%);
+    -fx-background-insets: 0 0 -1 0,0,1;
+    -fx-background-radius: 5,5,4;
+    -fx-padding: 7 10 7 10;
+    -fx-text-fill: #242d35;
     -fx-font-family: "Helvetica";
-    -fx-font-weight: bold;
-    -fx-background-color: linear-gradient(rgb(204, 230, 255), rgb(0, 30, 128));
-    -fx-effect: dropshadow( three-pass-box , rgb(0, 100, 128) , 5, 0.0 , 0 , 1 );
+    -fx-font-size: 12px;
+    -fx-text-fill: white;
+    
 }
 
 .button:hover {
