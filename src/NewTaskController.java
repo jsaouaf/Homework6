@@ -30,4 +30,15 @@ public class NewTaskController {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
+
+	public void dashboardClicked(ActionEvent event) throws IOException{
+		Stage primaryStage =  (Stage) ((Node) event.getSource()).getScene().getWindow();
+		primaryStage.setTitle("Syme");
+
+		Parent root = FXMLLoader.load(getClass().getResource("DashboardView2.fxml"));
+		Scene scene = new Scene(root);
+
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
 }

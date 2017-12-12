@@ -1,17 +1,17 @@
 .list-cell:filled:selected:focused, .list-cell:filled:selected {
-    -fx-background-color: linear-gradient(#328BDB 0%, #207BCF 25%, #1973C9 75%, #0A65BF 100%);
+    -fx-background-color: linear-gradient(#aed9fc 0%, #a0d4ff 25%, #5db1f7 75%, #45a6f7 100%);
     -fx-text-fill: white;
 }
 
 .list-cell { /* <=== can change to even for stripes */
     -fx-background-color: white;
-    -fx-font-size: 15px;
+    -fx-font-size: 12px;
     -fx-font-family: "Helvetica";
     -fx-text-fill: rgb(0, 30, 128);
 }
 
 .list-cell:filled:hover {
-    -fx-background-color: #0093ff;
+    -fx-background-color: #68b7f9;
     -fx-text-fill: white;
 }
 
@@ -30,7 +30,7 @@
 }
 
 .button {
-	-fx-background-color: 
+	-fx-background-color:
         #a6b5c9,
         linear-gradient(#303842 0%, #3e5577 20%, #375074 100%),
         linear-gradient(#768aa5 0%, #849cbb 5%, #5877a2 50%, #486a9a 51%, #4a6c9b 100%);
@@ -41,9 +41,9 @@
     -fx-font-family: "Helvetica";
     -fx-font-size: 12px;
     -fx-text-fill: white;
-    
+
 }
 
 .button:hover {
-    -fx-background-color: linear-gradient(#2A5058, #61a2b1);
+    -fx-background-color: linear-gradient(#0156aa, #80befc);
 }

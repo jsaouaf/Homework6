@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 import javafx.collections.FXCollections;
@@ -26,17 +27,39 @@ import javafx.stage.Stage;
  * 4. Implement company serialization
  */
 
+/**
+ * This class is the controller for the DashBoardView interface. It is the main screen the user interacts with.
+ * @author cgui1
+ *
+ */
 public class DashboardController2 {
+	//Instance variables to be used in the class
 	private LinkedHashMap<Integer, Project> projects;
 	private LinkedHashMap<Integer, Task> tasks;
 	private LinkedHashMap<Integer, Employee> employees;
 	private Integer selectedProjectId;
+	private Integer selectedTaskId;
 
+	//Instance variables for listview items
+	private ObservableList<String> projEmpsList;
+	private ArrayList<String> selectedProjectEmployees;
+	private ObservableList<String> projTasksList;
+	private ArrayList<String> selectedProjectTasks;
+	private ObservableList<String> selectedTaskEmployees;
+	private ArrayList<String> taskEmpsList;
+
+
+	//FXML instance variables, used in the view interface fxml
 	@FXML
 	private ListView<String> projectListView;
-
 	@FXML
 	private ListView<String> tasksListView;
+	@FXML
+	private ListView<String> projectTasksListView;
+	@FXML
+	private ListView<String> projectEmployeesListView;
+	@FXML
+	private ListView<String> taskEmployeesListView;
 
 	@FXML
 	private Label nameLbl;
@@ -49,12 +72,19 @@ public class DashboardController2 {
 	@FXML
 	private Label taskHoursLbl;
 	@FXML
+	private Label taskProjLbl;
+	@FXML
 	private ComboBox employeeBox;
 	@FXML
 	private ComboBox taskBox;
 	@FXML
+	private ComboBox taskEmployeesBox;
+	@FXML
 	private Button newTask;
 
+	/**
+	 * This method initializes the class.
+	 */
 	@FXML
 	private void initialize(){
 //		ArrayList<String> projectIds = new ArrayList<String>();
@@ -89,6 +119,7 @@ public class DashboardController2 {
 		projectListView.setItems(projectsList);
 		tasksListView.setItems(taskList);
 		employeeBox.setItems(employeesList);
+		taskEmployeesBox.setItems(employeesList);
 		taskBox.setItems(taskList);
 
 		//Displays project summary when project selected from listview
@@ -105,6 +136,25 @@ public class DashboardController2 {
 			startDateLbl.setText(startDateText);
 			targetEndDateLbl.setText(targetEndDateText);
 			deadlineLbl.setText(deadlineText);
+
+			selectedProjectEmployees = new ArrayList<String>();
+			selectedProjectTasks = new ArrayList<String>();
+			HashSet<Integer> projEmps = selectedProject.getEmployees();
+			HashSet<Integer> projTasks = selectedProject.getTasks();
+
+			for (Integer e : projEmps){
+				selectedProjectEmployees.add(employees.get(e).getName() + " (ID: " + e + ")");
+			}
+
+			for (Integer t : projTasks){
+				selectedProjectEmployees.add(tasks.get(t).getName() + " (ID: " + t + ")");
+			}
+
+			projEmpsList = FXCollections.observableArrayList(selectedProjectEmployees);
+			projTasksList = FXCollections.observableArrayList(selectedProjectTasks);
+
+			projectEmployeesListView.setItems(projEmpsList);
+			projectTasksListView.setItems(projTasksList);
 		}
 
 	   nameLbl.setVisible(true);
@@ -112,17 +162,32 @@ public class DashboardController2 {
 	   targetEndDateLbl.setVisible(true);
 	   deadlineLbl.setVisible(true);
 
+
 		});
 
+		//Displays task-specific information when task selected from listview
 		tasksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			Integer selectedTaskId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
+			selectedTaskId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
 			if (tasks.keySet().contains(selectedTaskId)){
 				Task selectedTask = tasks.get(selectedTaskId);
 				taskHoursLbl.setText(Integer.toString(selectedTask.getEstimatedHours()));
+				taskProjLbl.setText(Integer.toString(selectedTask.getProjectId()));
+				taskEmpsList = new ArrayList<String>();
+				HashSet<Integer> selectedTaskEmpIds = selectedTask.getEmployeeIds();
+
+				for (Integer e : selectedTaskEmpIds){
+					taskEmpsList.add(employees.get(e).getName() + " (ID: " + e + ")");
+				}
+
+				selectedTaskEmployees = FXCollections.observableArrayList(taskEmpsList);
 			}
+
 		taskHoursLbl.setVisible(true);
+		taskProjLbl.setVisible(true);
+		taskEmployeesListView.setItems(selectedTaskEmployees);
 		});
 	}
+
 
 	/**
 	 * Transitions to employee manager dashboard window
@@ -140,6 +205,10 @@ public class DashboardController2 {
 		primaryStage.show();
 	}
 
+	/**
+	 * This method leads to the Company Analysis screen when the analysis button is clicked on the dashboard.
+	 * @param event analysis button clicked
+	 */
 	public void analysisClicked(ActionEvent event){
 
 	}
@@ -160,16 +229,62 @@ public class DashboardController2 {
 		primaryStage.show();
 	}
 
+		/**
+		 * This method adds selected task from the ComboBox to the selected project.
+		 * @param event Add Task button clicked
+		 */
 	public void addTaskClicked(ActionEvent event){
-		Integer selectedTaskId = Integer.parseInt(taskBox.getValue().toString().replaceAll("[^0-9]", ""));
+		selectedTaskId = Integer.parseInt(taskBox.getValue().toString().replaceAll("[^0-9]", ""));
 		Company.getInstance().setProjectForTask(selectedTaskId, selectedProjectId);
+		selectedProjectTasks.add(tasks.get(selectedTaskId).getName() + " (ID: " + selectedTaskId + ")");
+		projTasksList = FXCollections.observableArrayList(selectedProjectTasks);
+		projectTasksListView.setItems(projTasksList);
 	}
 
+	/**
+	 * This method removes the selected task from the project.
+	 * @param event
+	 */
+	public void removeTaskClicked(ActionEvent event){
+		projectTasksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			selectedTaskId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
+			Company.getInstance().removeProjectFromTask(selectedTaskId, selectedProjectId);
+					});
+		projTasksList = FXCollections.observableArrayList(selectedProjectTasks);
+		projectTasksListView.setItems(projTasksList);
+	}
+
+	/**
+	 * This method adds the selected employee from the employee ComboBox to the selected project.
+	 * @param event Add Employee button clicked
+	 */
 	public void addEmployeeClicked(ActionEvent event){
 		Integer selectedEmployeeId = Integer.parseInt(employeeBox.getValue().toString().replaceAll("[^0-9]", ""));
 		Company.getInstance().addEmployeeToProject(selectedEmployeeId, selectedProjectId);
+		selectedProjectEmployees.add(employees.get(selectedEmployeeId).getName() + " (ID: " + selectedEmployeeId + ")");
+		projEmpsList = FXCollections.observableArrayList(selectedProjectEmployees);
+		projectEmployeesListView.setItems(projEmpsList);
 	}
 
+	/**
+	 * This method removes selected employee from selected project.
+	 * NOTE: still needs to remove it from the ArrayList
+	 * @param event
+	 */
+	public void removeEmployeeClicked(ActionEvent event){
+		projectEmployeesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			Integer selectedEmployeeId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
+			Company.getInstance().removeEmployeeFromProject(selectedEmployeeId, selectedProjectId);
+		});
+		projEmpsList = FXCollections.observableArrayList(selectedProjectEmployees);
+		projectEmployeesListView.setItems(projEmpsList);
+	}
+
+	/**
+	 * This method opens the window to add a new task when New Task button is clicked.
+	 * @param event Add Task button clicked
+	 * @throws IOException
+	 */
 	public void newTaskClicked(ActionEvent event) throws IOException{
 		Stage primaryStage =  (Stage) ((Node) event.getSource()).getScene().getWindow();
 		primaryStage.setTitle("New Task");
@@ -180,4 +295,20 @@ public class DashboardController2 {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
+
+	public void removeEmpFromTaskClicked(ActionEvent event){
+		taskEmployeesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			Integer selectedEmployeeId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
+			Company.getInstance().removeEmployeeFromTask(selectedTaskId, selectedEmployeeId);
+		});
+	}
+
+	public void assignEmpToTaskClicked(ActionEvent event){
+		Integer selectedEmployeeId = Integer.parseInt(taskEmployeesBox.getValue().toString().replaceAll("[^0-9]", ""));
+		Company.getInstance().addEmployeeToTask(selectedTaskId, selectedEmployeeId);
+		taskEmpsList.add(employees.get(selectedEmployeeId).getName() + " (ID " + selectedEmployeeId + ")");
+		selectedTaskEmployees = FXCollections.observableArrayList(taskEmpsList);
+		taskEmployeesListView.setItems(selectedTaskEmployees);
+	}
+
 }

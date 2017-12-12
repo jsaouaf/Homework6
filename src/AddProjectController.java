@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -15,13 +16,13 @@ public class AddProjectController {
 	private TextField projectName;
 
 	@FXML
-	private TextField startDate;
+	private DatePicker startDate;
 
 	@FXML
-	private TextField targetEndDate;
+	private DatePicker targetEndDate;
 
 	@FXML
-	private TextField deadline;
+	private DatePicker deadline;
 
 //Need to handle changing the start/end/deadline dates in this method still if user chooses to enter them
 	public void addProjectClicked(ActionEvent event) throws IOException{
