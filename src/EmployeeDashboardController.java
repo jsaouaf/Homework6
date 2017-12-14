@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,6 +41,10 @@ public class EmployeeDashboardController {
 	private Label completedHours;
 	@FXML
 	private Label efficiency;
+	@FXML
+	private ListView<String> projectListView;
+	@FXML
+	private ListView<String> taskListView;
 	
 	/**
 	 * This method sets the initial state with the employee names displayed
@@ -47,8 +52,6 @@ public class EmployeeDashboardController {
 	 */
 	@FXML
 	private void initialize() {
-		company.newEmployee("Jane");
-		company.newEmployee("Joe");
 		employees = Company.getInstance().getEmployeeIdMap();
 		for (Integer i : employees.keySet()){
 			employeeIds.add(Integer.toString(i));
@@ -77,6 +80,24 @@ public class EmployeeDashboardController {
 			assignedHours.setVisible(true);
 			completedHours.setVisible(true);
 			efficiency.setVisible(true);
+			
+			ArrayList<String> projects = new ArrayList<>();
+			ArrayList<String> tasks = new ArrayList<>();
+			LinkedHashMap<Integer, Project> projIdMap = company.getProjectIdMap();
+			LinkedHashMap<Integer, Task> taskIdMap = company.getTaskIdMap();
+			
+			for(int projId: employee.getProjects()) {
+				projects.add(projIdMap.get(projId).getName() + " (ID: " + projId + ")");
+			}
+			for(int taskId: employee.getTasks()) {
+				tasks.add(taskIdMap.get(taskId).getName() + " (ID: " + taskId + ")");
+			}
+			
+			ObservableList<String> projectList = FXCollections.observableArrayList(projects);
+			ObservableList<String> taskList = FXCollections.observableArrayList(tasks);
+			projectListView.setItems(projectList);
+			taskListView.setItems(taskList);
+			
 		});
 	}
 	

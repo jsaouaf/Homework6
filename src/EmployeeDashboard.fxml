@@ -37,8 +37,8 @@
       </GridPane>
       <Label layoutX="311.0" layoutY="226.0" text="Projects" />
       <Label layoutX="469.0" layoutY="226.0" text="Tasks" />
-      <ListView layoutX="467.0" layoutY="243.0" prefHeight="198.0" prefWidth="122.0" />
-      <ListView layoutX="311.0" layoutY="243.0" prefHeight="198.0" prefWidth="122.0" />
+      <ListView fx:id="taskListView" layoutX="467.0" layoutY="243.0" prefHeight="198.0" prefWidth="122.0" />
+      <ListView fx:id="projectListView" layoutX="311.0" layoutY="243.0" prefHeight="198.0" prefWidth="122.0" />
       <ListView fx:id="idListView" layoutX="146.0" layoutY="52.0" prefHeight="387.0" prefWidth="137.0" />
    </children>
 </AnchorPane>
