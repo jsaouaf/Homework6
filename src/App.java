@@ -20,8 +20,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class App extends Application{
-
-	private Company company = Company.getInstance();
 	
 	public static void main(String[] args){
 		launch(args);
@@ -29,22 +27,8 @@ public class App extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		// open company file if it exists
-//		try {
-//			FileInputStream fileIn = new FileInputStream("company.ser");
-//			ObjectInputStream in = new ObjectInputStream(fileIn);
-//			company.setCompany((Company) in.readObject());
-//			in.close();
-//			fileIn.close();
-//		} catch (IOException i) {
-//			System.out.println("IOException");
-//			System.out.println(i.getMessage());
-//		} catch (ClassNotFoundException c) {
-//			System.out.println("Company class not found");
-//			System.out.println(c.getMessage());
-//		}
-		
-		
+		Deserializer d = new Deserializer("company.ser");
+				
 		primaryStage.setTitle("Syme");
 
 		if (Company.getInstance().getName()==null){
@@ -70,7 +54,7 @@ public class App extends Application{
 			          FileOutputStream fileOut =
 			          new FileOutputStream("company.ser");
 			          ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			          out.writeObject(company);
+			          out.writeObject(Company.getInstance());
 			          out.close();
 			          fileOut.close();
 			       } catch (IOException i) {
@@ -88,9 +72,5 @@ public class App extends Application{
 
 
 	}
-	
-
-
-
 
 }
