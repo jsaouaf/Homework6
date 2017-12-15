@@ -21,8 +21,7 @@ public class Deserializer {
 			in.close();
 			fileIn.close();
 		} catch (IOException i) {
-			System.out.println("IOException");
-			System.out.println(i.getMessage());
+			System.out.println("No company on file.");
 		} catch (ClassNotFoundException c) {
 			System.out.println("Company class not found");
 			System.out.println(c.getMessage());

@@ -42,6 +42,10 @@ public class Company implements Serializable{
     public static Company getInstance() {
     		return companyInstance;
     }
+    
+    public void setCompany(Company restoredCompany) {
+    		companyInstance = restoredCompany;
+    }
 
     public void newProject(String name) {
         projectIdTally++;
