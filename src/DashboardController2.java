@@ -329,7 +329,7 @@ public class DashboardController2 {
 
 	public void completeTaskClicked(ActionEvent event){
 		int hours = Integer.parseInt(hoursToCompleteTask.getText());
-		tasks.get(selectedTaskId).completeTask(hours);
+		Company.getInstance().completeTask(selectedTaskId, hours);
 		taskNames.remove(selectedTaskIndex);
 		updateTasksListView();
 	}
