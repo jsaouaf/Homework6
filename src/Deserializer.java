@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
  *
  */
 public class Deserializer {
-	
+
 	/**
 	 * Deserializes the given company file and sets the Company instance to match the file
 	 * @param filename
@@ -27,5 +27,5 @@ public class Deserializer {
 			System.out.println(c.getMessage());
 		}
 	}
-	
+
 }
