@@ -19,14 +19,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-/*
- * To do:
- * 1. Show the tasks and employees associated with each project
- * 2. Add display of task hours, employees on task, option to remove task when clicked
- * 3. Figure out what to allow the user to input in terms of dates, project names, etc.
- * 4. Implement company serialization
- */
-
 /**
  * This class is the controller for the DashBoardView interface. It is the main screen the user interacts with.
  * @author cgui1
