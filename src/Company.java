@@ -42,7 +42,7 @@ public class Company implements Serializable{
     public static Company getInstance() {
     		return companyInstance;
     }
-    
+
     public void setCompany(Company restoredCompany) {
     		companyInstance = restoredCompany;
     }
@@ -139,24 +139,24 @@ public class Company implements Serializable{
         projectIdMap.get(projectId).removeEmployee(employeeId);
         employeeIdMap.get(employeeId).removeProject(projectId);
     }
-    
+
     /**
      * This method deletes an employee from the system.
      * @param employeeId
      */
     public void deleteEmployee(int employeeId) {
     	Employee thisEmployee = employeeIdMap.get(employeeId);
-    	
+
     	// remove employee from all tasks
     	for (int taskId : thisEmployee.getTasks()) {
     		removeEmployeeFromTask(employeeId, taskId);
     	}
-    	
+
     	// remove employee from all projects
     	for (int projectId : thisEmployee.getProjects()) {
     		removeEmployeeFromProject(employeeId, projectId);
     	}
-    	
+
     	// removing employee from employeeIdMap
     	employeeIdMap.remove(employeeId);
     }
