@@ -215,11 +215,20 @@ public class DashboardController2 {
 	}
 
 	/**
-	 * This method leads to the Company Analysis screen when the analysis button is clicked on the dashboard.
+	 * This method leads to the Project Analysis screen when the analysis button is clicked on the dashboard.
 	 * @param event analysis button clicked
 	 */
 	public void analysisClicked(ActionEvent event){
+		Stage primaryStage =  (Stage) ((Node) event.getSource()).getScene().getWindow();
 
+		BurndownChart burndown = new BurndownChart();
+		Scene scene = burndown.getScene();
+
+		Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(primaryStage);
+        dialog.setScene(scene);
+        dialog.show();
 	}
 
 	/**
@@ -382,4 +391,6 @@ public class DashboardController2 {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
+
+
 }

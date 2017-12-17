@@ -131,5 +131,6 @@
       <Label layoutX="382.0" layoutY="17.0" text="Organization:" />
       <Label fx:id="companyNameLbl" layoutX="473.0" layoutY="17.0" text="Label" />
       <Button layoutX="220.0" layoutY="555.0" mnemonicParsing="false" onAction="#companySetupClicked" text="Company Setup" />
+      <Button layoutX="390.0" layoutY="555.0" mnemonicParsing="false" onAction="#analysisClicked" text="View Project Analysis" />
    </children>
 </AnchorPane>

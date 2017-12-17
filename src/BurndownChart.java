@@ -19,6 +19,7 @@ import javafx.stage.Stage;
  *
  */
 public class BurndownChart extends Application {
+	private Scene scene;
 
 	@Override
 	public void start(Stage stage) {
@@ -69,7 +70,7 @@ public class BurndownChart extends Application {
 			while (deadline.isAfter(taskHoursToPlot.lastKey())) {
 				taskHoursToPlot.put(taskHoursToPlot.lastKey().plusDays(1), 0);
 			}
-		}	
+		}
 
 		// create x-axis. the same x-axis will be used for both graphs to ensure match.
 		ArrayList<String> xAxisDates = new ArrayList<>();
@@ -139,12 +140,16 @@ public class BurndownChart extends Application {
 
 		StackPane root = new StackPane();
 		root.getChildren().addAll(barChart, lineChart);
-		Scene scene = new Scene(root, 800, 600);
+		scene = new Scene(root, 800, 600);
 		stage.setScene(scene);
 		stage.show();
 	}
 
-	public static void main(String[] args) {
-		launch(args);
+	public Scene getScene(){
+		return scene;
 	}
+
+//	public static void main(String[] args) {
+//		launch(args);
+//	}
 }
