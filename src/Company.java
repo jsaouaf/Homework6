@@ -236,6 +236,29 @@ public class Company implements Serializable{
     	task.completeTask(hours);
     	updateTaskHoursLog();
     }
+    
+    /**
+     * This method deletes a task.
+     * @param taskId
+     */
+    public void deleteTask(int taskId) {
+    	Task task = taskIdMap.get(taskId);
+    	
+    	// deleting task from any projects
+    	if (task.getProjectId() != 0) {
+    		removeProjectFromTask(taskId, task.getProjectId());
+    	}
+    	
+    	// deleting task from any employees
+    	if (!task.getEmployeeIds().isEmpty()) {
+    		for (int employeeId : task.getEmployeeIds()) {
+    			removeEmployeeFromTask(taskId, employeeId);
+    		}
+    	}
+    	
+    	// deleting task from HashMap
+    	taskIdMap.remove(taskId);
+    }
 
     public void printAllProjects() {
         for (int id : projectIdMap.keySet()) {
