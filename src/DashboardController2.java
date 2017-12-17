@@ -116,7 +116,11 @@ public class DashboardController2 {
 		}
 
 		for (Integer i: tasks.keySet()){
-			taskNames.add(tasks.get(i).getName() + " (ID: " + i + ")");
+			if(tasks.get(i).isComplete()){
+				taskNames.add("COMPLETED: " + tasks.get(i).getName() + " (ID: " + i + ")");
+			} else {
+				taskNames.add(tasks.get(i).getName() + " (ID: " + i + ")");
+			}
 		}
 
 		for (Integer i: employees.keySet()){
@@ -158,7 +162,9 @@ public class DashboardController2 {
 			}
 
 			for (Integer t : projTasks){
-				selectedProjectTasks.add(tasks.get(t).getName() + " (ID: " + t + ")");
+				if(!(tasks.get(t).isComplete())){
+					selectedProjectTasks.add(tasks.get(t).getName() + " (ID: " + t + ")");
+				}
 			}
 
 			projEmpsList = FXCollections.observableArrayList(selectedProjectEmployees);
@@ -249,8 +255,8 @@ public class DashboardController2 {
 		int selectedBoxTaskId = Integer.parseInt(taskBox.getValue().toString().replaceAll("[^0-9]", ""));
 		Company.getInstance().setProjectForTask(selectedBoxTaskId, selectedProjectId);
 		selectedProjectTasks.add(tasks.get(selectedBoxTaskId).getName() + " (ID: " + selectedBoxTaskId + ")");
-		//taskBoxList.remove(selectedBoxTaskId);
-		taskBox.setItems(taskBoxList);
+		//taskBoxList.set(selectedTaskIndex, "Already Assigned Task");
+		//taskBox.setItems(taskBoxList);
 		projTasksList = FXCollections.observableArrayList(selectedProjectTasks);
 		projectTasksListView.setItems(projTasksList);
 	}
@@ -341,7 +347,7 @@ public class DashboardController2 {
 	public void completeTaskClicked(ActionEvent event){
 		int hours = Integer.parseInt(hoursToCompleteTask.getText());
 		tasks.get(selectedTaskId).completeTask(hours);
-		taskNames.remove(selectedTaskIndex);
+		taskNames.set(selectedTaskIndex, "Completed - ID: " + (selectedTaskIndex+1));
 		updateTasksListView();
 	}
 
