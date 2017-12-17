@@ -30,8 +30,8 @@
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </padding>
             </TextField>
-            <DatePicker prefHeight="31.0" prefWidth="106.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <DatePicker fx:id="startDate" prefHeight="31.0" prefWidth="106.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <DatePicker fx:id="deadline" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label text="*Required" textFill="#eb0c0c" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
       </GridPane>
