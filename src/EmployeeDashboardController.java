@@ -90,7 +90,9 @@ public class EmployeeDashboardController {
 				projects.add(projIdMap.get(projId).getName() + " (ID: " + projId + ")");
 			}
 			for(int taskId: employee.getTasks()) {
-				tasks.add(taskIdMap.get(taskId).getName() + " (ID: " + taskId + ")");
+				Task task = taskIdMap.get(taskId);
+				if(!task.isComplete())
+					tasks.add(task.getName() + " (ID: " + taskId + ")");
 			}
 			
 			ObservableList<String> projectList = FXCollections.observableArrayList(projects);
@@ -107,18 +109,20 @@ public class EmployeeDashboardController {
 	 * @param event add employee button clicked
 	 */
 	public void addEmployeeClicked(ActionEvent event) {
-		company.newEmployee(employeeName.getText());
-		employeeNames.add(employeeName.getText());
-		
-		employees = Company.getInstance().getEmployeeIdMap();
-		for (Integer i : employees.keySet()){
-			if(!employeeIds.contains(Integer.toString(i)))
-				employeeIds.add(Integer.toString(i));
+		if(!employeeName.getText().isEmpty()) {
+			company.newEmployee(employeeName.getText());
+			employeeNames.add(employeeName.getText());
+
+			employees = Company.getInstance().getEmployeeIdMap();
+			for (Integer i : employees.keySet()){
+				if(!employeeIds.contains(Integer.toString(i)))
+					employeeIds.add(Integer.toString(i));
+			}
+			ObservableList<String> names = FXCollections.observableArrayList(employeeNames);
+			ObservableList<String> ids = FXCollections.observableArrayList(employeeIds);
+			employeeListView.setItems(names);
+			idListView.setItems(ids);
 		}
-		ObservableList<String> names = FXCollections.observableArrayList(employeeNames);
-		ObservableList<String> ids = FXCollections.observableArrayList(employeeIds);
-		employeeListView.setItems(names);
-		idListView.setItems(ids);
 	}
 
 	/**
