@@ -27,7 +27,7 @@ public class AddProjectController {
 //Need to handle changing the start/end/deadline dates in this method still if user chooses to enter them
 	public void addProjectClicked(ActionEvent event) throws IOException{
 
-		Company.getInstance().newProject(projectName.getText());
+		Company.getInstance().newProject(projectName.getText(), deadline.getValue());
 
 //		if(!startDate.getText().isEmpty()){
 //

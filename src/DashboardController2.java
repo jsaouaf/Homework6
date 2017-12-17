@@ -249,7 +249,7 @@ public class DashboardController2 {
 		int selectedBoxTaskId = Integer.parseInt(taskBox.getValue().toString().replaceAll("[^0-9]", ""));
 		Company.getInstance().setProjectForTask(selectedBoxTaskId, selectedProjectId);
 		selectedProjectTasks.add(tasks.get(selectedBoxTaskId).getName() + " (ID: " + selectedBoxTaskId + ")");
-		taskBoxList.remove(selectedBoxTaskId);
+		//taskBoxList.remove(selectedBoxTaskId);
 		taskBox.setItems(taskBoxList);
 		projTasksList = FXCollections.observableArrayList(selectedProjectTasks);
 		projectTasksListView.setItems(projTasksList);
