@@ -50,6 +50,7 @@ public class DashboardController2 {
 	private ArrayList<String> taskEmpsList;
 	private ObservableList<String> taskList;
 	private ArrayList<String> taskNames;
+	private ObservableList<String> taskBoxList;
 
 
 	//FXML instance variables, used in the view interface fxml
@@ -71,8 +72,6 @@ public class DashboardController2 {
 	private Label nameLbl;
 	@FXML
 	private Label startDateLbl;
-	@FXML
-	private Label targetEndDateLbl;
 	@FXML
 	private Label deadlineLbl;
 
@@ -102,15 +101,11 @@ public class DashboardController2 {
 		companyNameLbl.setText(Company.getInstance().getName());
 		companyNameLbl.setVisible(true);
 
-//		ArrayList<String> projectIds = new ArrayList<String>();
-//		ArrayList<String> taskIds = new ArrayList<String>();
-		//Get tasks and projects maps
+		//Initializes tasks and projects maps
 		tasks = Company.getInstance().getTaskIdMap();
 		projects = Company.getInstance().getProjectIdMap();
 		employees = Company.getInstance().getEmployeeIdMap();
-//		for (Integer i : projects.keySet()){
-//			projectIds.add(Integer.toString(i));
-//		}
+
 		//Create the listviews observable lists of projects names and task names
 		ArrayList<String> projectNames = new ArrayList<String>();
 		taskNames = new ArrayList<String>();
@@ -135,21 +130,22 @@ public class DashboardController2 {
 		tasksListView.setItems(taskList);
 		employeeBox.setItems(employeesList);
 		taskEmployeesBox.setItems(employeesList);
-		taskBox.setItems(taskList);
 
-		//Displays project summary when project selected from listview
+		taskBoxList = FXCollections.observableArrayList(taskNames);
+		taskBox.setItems(taskBoxList);
+
+		//Add listener to listen for which project selected
+		//Displays project summary when project selected from listview, along with lists of employees and tasks
 		projectListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 		selectedProjectId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
 		if (projects.keySet().contains(selectedProjectId)){
 			Project selectedProject = projects.get(selectedProjectId);
 			String nameText = selectedProject.getName();
 			String startDateText = selectedProject.getStartDate().toString();
-			String targetEndDateText = selectedProject.getTargetEndDate().toString();
 			String deadlineText = selectedProject.getDeadline().toString();
 
 			nameLbl.setText(nameText);
 			startDateLbl.setText(startDateText);
-			targetEndDateLbl.setText(targetEndDateText);
 			deadlineLbl.setText(deadlineText);
 
 			selectedProjectEmployees = new ArrayList<String>();
@@ -174,11 +170,11 @@ public class DashboardController2 {
 
 	   nameLbl.setVisible(true);
 	   startDateLbl.setVisible(true);
-	   targetEndDateLbl.setVisible(true);
 	   deadlineLbl.setVisible(true);
 
 		});
 
+		//Adds listener to listen for which task is selected in task manager
 		//Displays task-specific information when task selected from listview
 		tasksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			selectedTaskId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
@@ -244,21 +240,24 @@ public class DashboardController2 {
 		primaryStage.show();
 	}
 
-		/**
-		 * This method adds selected task from the ComboBox to the selected project.
-		 * @param event Add Task button clicked
-		 */
+	/**
+	 * This method adds selected task from the ComboBox to the selected project.
+	 * Note that each task can only be added to one project and will be removed from options once added.
+	 * @param event Add Task button clicked in project manager section
+	 */
 	public void addTaskToProjectClicked(ActionEvent event){
 		int selectedBoxTaskId = Integer.parseInt(taskBox.getValue().toString().replaceAll("[^0-9]", ""));
 		Company.getInstance().setProjectForTask(selectedBoxTaskId, selectedProjectId);
 		selectedProjectTasks.add(tasks.get(selectedBoxTaskId).getName() + " (ID: " + selectedBoxTaskId + ")");
+		taskBoxList.remove(selectedBoxTaskId);
+		taskBox.setItems(taskBoxList);
 		projTasksList = FXCollections.observableArrayList(selectedProjectTasks);
 		projectTasksListView.setItems(projTasksList);
 	}
 
 	/**
 	 * This method removes the selected task from the project.
-	 * @param event
+	 * @param event Remove button clicked for selected task in listview for project
 	 */
 	public void removeTaskClicked(ActionEvent event){
 		projectTasksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -312,6 +311,10 @@ public class DashboardController2 {
 		primaryStage.show();
 	}
 
+	/**
+	 * This method removes the employee from being assigned to the selected task.
+	 * @param event Remove Employee button clicked in Task Manager
+	 */
 	public void removeEmpFromTaskClicked(ActionEvent event){
 		taskEmployeesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			Integer selectedEmployeeId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
@@ -320,6 +323,10 @@ public class DashboardController2 {
 		updateTaskEmployeesListView();
 	}
 
+	/**
+	 * This method assigns an employee to a selected task.
+	 * @param event Assign button clicked in task manager
+	 */
 	public void assignEmpToTaskClicked(ActionEvent event){
 		Integer selectedEmployeeId = Integer.parseInt(taskEmployeesBox.getValue().toString().replaceAll("[^0-9]", ""));
 		Company.getInstance().addEmployeeToTask(selectedTaskId, selectedEmployeeId);
@@ -327,28 +334,46 @@ public class DashboardController2 {
 		updateTaskEmployeesListView();
 	}
 
+	/**
+	 * This method completes the task and logs the amount of hours it took.
+	 * @param event Complete Task button clicked in task manager
+	 */
 	public void completeTaskClicked(ActionEvent event){
 		int hours = Integer.parseInt(hoursToCompleteTask.getText());
-		Company.getInstance().completeTask(selectedTaskId, hours);
+		tasks.get(selectedTaskId).completeTask(hours);
 		taskNames.remove(selectedTaskIndex);
 		updateTasksListView();
 	}
 
+	/**
+	 * This method is used to update the listview for the employeees assigned to a task.
+	 */
 	public void updateTaskEmployeesListView(){
 		selectedTaskEmployees = FXCollections.observableArrayList(taskEmpsList);
 		taskEmployeesListView.setItems(selectedTaskEmployees);
 	}
 
+	/**
+	 * This method is used to update the listview of all the tasks in the task manager.
+	 */
 	public void updateTasksListView(){
 		taskList = FXCollections.observableArrayList(taskNames);
 		tasksListView.setItems(taskList);
 	}
 
+	/**
+	 * This method is used to update the tasks listview to shows the tasks assigned to a project.
+	 */
 	public void updateProjTasksListView(){
 		projTasksList = FXCollections.observableArrayList(selectedProjectTasks);
 		projectTasksListView.setItems(projTasksList);
 	}
 
+	/**
+	 * This method opens up the setup window to change the company name when clicked.
+	 * @param event Company Setup button clicked
+	 * @throws IOException
+	 */
 	public void companySetupClicked(ActionEvent event) throws IOException{
 		Stage primaryStage =  (Stage) ((Node) event.getSource()).getScene().getWindow();
 		primaryStage.setTitle("Company Setup");

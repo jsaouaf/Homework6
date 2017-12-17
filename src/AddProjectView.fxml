@@ -24,22 +24,15 @@
          <children>
             <Label text="Name:" />
             <Label text="Start Date:" GridPane.rowIndex="1" />
-            <Label prefHeight="27.0" prefWidth="147.0" text="Target End Date:" GridPane.rowIndex="2" />
-            <Label text="Deadline" GridPane.rowIndex="3" />
-            <Label text="Label" GridPane.rowIndex="4" />
+            <Label text="Deadline" GridPane.rowIndex="2" />
             <TextField fx:id="projectName" prefHeight="31.0" prefWidth="123.0" GridPane.columnIndex="1">
-               <padding>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-               </padding>
-            </TextField>
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="4">
                <padding>
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </padding>
             </TextField>
             <DatePicker prefHeight="31.0" prefWidth="106.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="*Required" textFill="#eb0c0c" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
       </GridPane>
       <Label layoutX="14.0" layoutY="14.0" text="Add New Project" textFill="#1a1e94">
@@ -48,5 +41,8 @@
          </font></Label>
       <Button layoutX="92.0" layoutY="333.0" mnemonicParsing="false" onAction="#addProjectClicked" text="Add Project" />
       <Button layoutX="209.0" layoutY="11.0" mnemonicParsing="false" onAction="#dashboardClicked" text="Dashboard" />
+      <Label layoutX="267.0" layoutY="82.0" text="*" textFill="#e80505" />
+      <Label layoutX="267.0" layoutY="123.0" text="*" textFill="#e80505" />
+      <Label layoutX="267.0" layoutY="169.0" text="*" textFill="#e80505" />
    </children>
 </AnchorPane>
