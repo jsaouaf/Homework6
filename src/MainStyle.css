@@ -47,3 +47,15 @@
 .button:hover {
     -fx-background-color: linear-gradient(#0156aa, #80befc);
 }
+
+.chart-plot-background {
+-fx-background-color: transparent;
+}
+
+.default-color0.chart-bar {
+-fx-bar-fill: #68b7f9
+}
+
+.default-color0.chart-series-line {
+-fx-stroke: red;
+}

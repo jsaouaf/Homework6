@@ -42,7 +42,7 @@ public class CompanyAnalysis {
 	public int longerThanExpProjects(){
 		int longerThanExpProjects = 0;
 		for (Integer id : projectIdMap.keySet()){
-			if (projectIdMap.get(id).getActualEndDate().isAfter(projectIdMap.get(id).getTargetEndDate())){
+			if (projectIdMap.get(id).getActualEndDate().isAfter(projectIdMap.get(id).getDeadline())){
 				longerThanExpProjects++;
 			}
 		}

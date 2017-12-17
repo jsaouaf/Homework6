@@ -1,18 +1,13 @@
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 
 /**
- * WIP!!!!
  * This class represents the company. It keeps track of projects, employees, and tasks.
  * This should be the only class the customer interfaces with.
  * @author zyud
  *
- * TODO: 1. ID generation system to be modified to generate unique IDs for projects,
- *       employees, and tasks. Right now they are too similar to one another and can
- *       get mixed up.
- *       2. throw exceptions for things like "employee not found", "project not found"
- *       etc.
- *       3. Finish documentation and adding in additional methods.
  */
 public class Company implements Serializable{
     private static Company companyInstance = new Company(); // singleton constructor for the company
@@ -42,17 +37,25 @@ public class Company implements Serializable{
     public static Company getInstance() {
     		return companyInstance;
     }
-    
+
     public void setCompany(Company restoredCompany) {
     		companyInstance = restoredCompany;
     }
-
-    public void newProject(String name) {
+    
+    /**
+     * Creates a new project.
+     * @param name
+     */
+    public void newProject(String name, LocalDate deadline) {
         projectIdTally++;
-        Project project = new Project(projectIdTally, name);
+        Project project = new Project(projectIdTally, name, deadline);
         projectIdMap.put(projectIdTally, project);
     }
-
+    
+    /**
+     * Creates a new employee.
+     * @param name
+     */
     public void newEmployee(String name) {
         employeeIdTally++;
         Employee employee = new Employee(employeeIdTally, name);
@@ -103,7 +106,12 @@ public class Company implements Serializable{
             projectIdMap.get(projectId).addTask(taskId);
         }
     }
-
+    
+    /**
+     * Removes a project from task.
+     * @param taskId
+     * @param projectId
+     */
     public void removeProjectFromTask(int taskId, int projectId) {
         Task thisTask = taskIdMap.get(taskId);
 
@@ -113,7 +121,12 @@ public class Company implements Serializable{
             thisTask.setProjectId(0);
         }
     }
-
+    
+    /**
+     * This method adds an employee to a task.
+     * @param taskId
+     * @param employeeId
+     */
     public void addEmployeeToTask(int taskId, int employeeId) {
         Task thisTask = taskIdMap.get(taskId);
         Employee thisEmployee = employeeIdMap.get(employeeId);
@@ -121,7 +134,12 @@ public class Company implements Serializable{
         thisTask.addEmployee(employeeId);
         thisEmployee.addTask(taskId);
     }
-
+    
+    /**
+     * This method removes an employee from a task.
+     * @param taskId
+     * @param employeeId
+     */
     public void removeEmployeeFromTask(int taskId, int employeeId) {
         Task thisTask = taskIdMap.get(taskId);
         Employee thisEmployee = employeeIdMap.get(employeeId);
@@ -130,11 +148,21 @@ public class Company implements Serializable{
         thisEmployee.removeTask(taskId);
     }
 
+    /**
+     * This method adds an employee to a project.
+     * @param employeeId
+     * @param projectId
+     */
     public void addEmployeeToProject(int employeeId, int projectId) {
         projectIdMap.get(projectId).addEmployee(employeeId);
         employeeIdMap.get(employeeId).addProject(projectId);
     }
-
+    
+    /**
+     * This method removes an employee from a project they are assigned to.
+     * @param employeeId
+     * @param projectId
+     */
     public void removeEmployeeFromProject(int employeeId, int projectId) {
         projectIdMap.get(projectId).removeEmployee(employeeId);
         employeeIdMap.get(employeeId).removeProject(projectId);
@@ -159,6 +187,54 @@ public class Company implements Serializable{
     	
     	// removing employee from employeeIdMap
     	employeeIdMap.remove(employeeId);
+    }
+    
+    public void updateTaskHoursLog() {
+    	LocalDate today = LocalDate.now();
+    	
+    	// iterate thru each project and update taskHoursLog
+    	for (Project project : projectIdMap.values()) {
+    		// Skip inactive projects
+    		if (!project.isActive()) {
+    			continue;
+    		}
+    		
+    		// calculate task hours left for this project
+    		int taskHoursLeft = 0;
+    		for (Integer taskId : project.getTasks()) {
+    			Task task = taskIdMap.get(taskId);
+    			if (!task.isComplete()) {
+    				taskHoursLeft++;
+    			}
+    		}
+    		// fill in any gaps in the dates
+    		LocalDate yesterday = LocalDate.now().minusDays(1);
+    		
+    		// while the last entry in the log is earlier than yesterday, fill in
+    		// in the info until yesterday has been covered
+    		// if there are gaps in the log, that means the tasks hours did not change
+    		// for the dates that are missing, so we will fill them with the latest
+    		// task hours
+    		while (project.getTaskHoursLog().lastKey().isBefore(yesterday)) {
+    			LocalDate gapDate = project.getTaskHoursLog().lastKey().plusDays(1);
+    			int taskHoursLastLogged = project.getTaskHoursLog().lastEntry().getValue();
+    			project.getTaskHoursLog().put(gapDate, taskHoursLastLogged);
+    		}
+
+    		// update taskHoursLog for that project
+    		project.getTaskHoursLog().put(LocalDate.now(), taskHoursLeft);
+    	}
+    }
+    
+    /**
+     * This method completes a task and updates the task hours log.
+     * @param taskId
+     * @param hours
+     */
+    public void completeTaskAndUpdate(int taskId, int hours) {
+    	Task task = taskIdMap.get(taskId);
+    	task.completeTask(hours);
+    	updateTaskHoursLog();
     }
 
     public void printAllProjects() {

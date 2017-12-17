@@ -1,19 +1,16 @@
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-/**
- * WIP!!!
- * 
+/** 
  * This class implements a project object.
  * The inner class Task implements a task within a project.
  * @author zyud
  *
- * TODO: 1. implement methods to set dates from input string for both Project and Task.
- *       2. implement common sense checks (i.e. Can only assign employee to task who is
- *       already part of project. Start date can't be later than end dates and deadlines
- *       etc.)
- *       3. implement setter methods to project notes and task notes.
  */
 public class Project implements Serializable{
 
@@ -23,34 +20,44 @@ public class Project implements Serializable{
     private HashSet<Integer> employees;
     private HashSet<Integer> tasks;
     private LocalDate startDate;
-    private LocalDate targetEndDate;
     private LocalDate actualEndDate;
     private LocalDate deadline;
-    private String notes;
+    
+    // TreeMap to store dates with taskHoursLeft for burndown chart
+    private TreeMap<LocalDate, Integer> taskHoursLog;
     
     /**
      * Constructor for project.
      * @param id projectId
      * @param name project name
      */
-    public Project(int id, String name) {
+    public Project(int id, String name, LocalDate deadline) {
         this.id = id;
         this.name = name;
         isActive = true;
         employees = new HashSet<>();
         tasks = new HashSet<>();
         
-        // Start date is set to today by default
-        // Can be edited
+        // start date is set to today
         startDate = LocalDate.now();
         
-        // End dates and deadlines are initialized with
-        // placeholder MAX date. User shall set them to
-        // be real dates as soon as possible.
+        // set deadline
+        this.deadline = deadline;
+        
+        // actualEnddate and deadlines are initialized with
+        // placeholder MAX date.User shall set deadline to
+        // be a real date as soon as possible.
         actualEndDate = LocalDate.MAX;
-        targetEndDate = LocalDate.MAX;
-        deadline = LocalDate.MAX;
-        notes = new String();
+        
+        taskHoursLog = new TreeMap<>();
+    }
+    
+    /**
+     * This method sets a project as complete.
+     */
+    public void completeProject() {
+    	actualEndDate = LocalDate.now();
+    	isActive = false;
     }
     
     /**
@@ -90,11 +97,20 @@ public class Project implements Serializable{
     }
     
     /**
-     * This method removes an employee from the Set of employees on this project.
+     * Removes an employee from the Set of employees on this project.
      * @param employeeId
      */
     public void removeEmployee(int employeeId) {
         employees.remove(employeeId);
+    }
+    
+    /**
+     * sets the deadline of the project.
+     */
+    public void setDeadline(String deadline) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(deadline, dtf);
+        this.deadline = date;
     }
 
     /**
@@ -128,13 +144,6 @@ public class Project implements Serializable{
     }
 
     /**
-     * @return the targetEndDate
-     */
-    public LocalDate getTargetEndDate() {
-        return targetEndDate;
-    }
-
-    /**
      * @return the actualEndDate
      */
     public LocalDate getActualEndDate() {
@@ -148,10 +157,10 @@ public class Project implements Serializable{
         return deadline;
     }
 
-    /**
-     * @return the notes
-     */
-    public String getNotes() {
-        return notes;
-    }
+	/**
+	 * @return the taskHoursLog
+	 */
+	public TreeMap<LocalDate, Integer> getTaskHoursLog() {
+		return taskHoursLog;
+	}
 }

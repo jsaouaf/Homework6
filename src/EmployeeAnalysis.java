@@ -37,9 +37,8 @@ public class EmployeeAnalysis {
 			if(!task.isComplete()) {
 				hours += task.getEstimatedHours();
 			}
-
 		}
-		
+
 		return hours;
 	}
 	
