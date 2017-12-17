@@ -1,7 +1,9 @@
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,11 +13,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -219,10 +227,14 @@ public class DashboardController2 {
 	 * @param event analysis button clicked
 	 */
 	public void analysisClicked(ActionEvent event){
+		// Update task hours log
+		Company.getInstance().updateTaskHoursLog();
+		
+		// display burndown chart
 		Stage primaryStage =  (Stage) ((Node) event.getSource()).getScene().getWindow();
+		primaryStage.setTitle("Project Analysis");
 
-		BurndownChart burndown = new BurndownChart();
-		Scene scene = burndown.getScene();
+        Scene scene = burndownChart(selectedProjectId);
 
 		Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
@@ -392,5 +404,100 @@ public class DashboardController2 {
 		primaryStage.show();
 	}
 
+	public Scene burndownChart(int projectId) {
+		Scene scene;
+		Project project = projects.get(projectId);
+		TreeMap<LocalDate, Integer> taskHoursLog = project.getTaskHoursLog();
+		LocalDate deadline = project.getDeadline();
 
+		// get the data ready for plotting
+		TreeMap<LocalDate, Integer> taskHoursToPlot = new TreeMap<>(taskHoursLog);
+
+		// calculate difference between first day and deadline
+		// this number will tell us where to plot the deadline in the graph
+		int projectDuration = 0;
+		LocalDate date = taskHoursToPlot.firstKey();
+		while (date.isBefore(deadline)) {
+			date = date.plusDays(1);
+			projectDuration++;
+		}
+
+		// fill in the gaps between last entry in task hours log and deadline for plotting
+		if (deadline.isAfter(taskHoursToPlot.lastKey())){
+			while (deadline.isAfter(taskHoursToPlot.lastKey())) {
+				taskHoursToPlot.put(taskHoursToPlot.lastKey().plusDays(1), 0);
+			}
+		}
+
+		// create x-axis. the same x-axis will be used for both graphs to ensure match.
+		ArrayList<String> xAxisDates = new ArrayList<>();
+		for (LocalDate d : taskHoursToPlot.keySet()) {
+			xAxisDates.add(d.toString());
+		}
+
+		// create y-axis for bar chart
+		ArrayList<Integer> yAxisHours = new ArrayList<>();
+		for (Integer h : taskHoursToPlot.values()) {
+			yAxisHours.add(h);
+		}
+
+		// create y-axis for deadline chart
+		ArrayList<Double> yAxisDeadline = new ArrayList<>();
+		Double initialHours = (double) yAxisHours.get(0);
+		yAxisDeadline.add(initialHours);
+		
+		for (int i = 1; i < projectDuration; i++) {
+			yAxisDeadline.add(initialHours - i * initialHours / projectDuration);
+		}
+
+		// if project overdue, add additional deadline y-axis values after deadline
+		while (yAxisDeadline.size() < yAxisHours.size()) {
+			yAxisDeadline.add(0.0);
+		}
+
+		// x-axis and y-axis for both charts:
+		final CategoryAxis xAxis = new CategoryAxis();
+		xAxis.setLabel("Date");
+		final NumberAxis yAxis = new NumberAxis();
+		yAxis.setLabel("Task Hours Left");
+
+		// first chart - task hours remaining bar chart
+		final BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+		barChart.setTitle(" "); // blank title so that two charts align
+		barChart.setLegendVisible(false);
+		barChart.setAnimated(false);
+		barChart.getStylesheets().addAll(getClass().getResource("MainStyle.css").toExternalForm());
+		XYChart.Series<String, Number> series1 = new XYChart.Series<>();
+		for (int i = 0; i < xAxisDates.size(); i++) {
+			series1.getData().add(new XYChart.Data<>(xAxisDates.get(i), yAxisHours.get(i)));
+		}
+		barChart.getData().add(series1);
+
+		// second chart - deadline line chart
+		final LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+		lineChart.setTitle(project.getName() + " Burndown Chart");
+		lineChart.setLegendVisible(false);
+		lineChart.setAnimated(false);
+		lineChart.setCreateSymbols(false);
+		lineChart.setAlternativeRowFillVisible(false);
+		lineChart.setAlternativeColumnFillVisible(false);
+		lineChart.setHorizontalGridLinesVisible(false);
+		lineChart.setVerticalGridLinesVisible(false);
+		lineChart.getXAxis().setVisible(false);
+		lineChart.getYAxis().setVisible(false);
+		lineChart.getStylesheets().addAll(getClass().getResource("MainStyle.css").toExternalForm());
+		XYChart.Series<String, Number> series2 = new XYChart.Series<>();
+
+		for (int i = 0; i < xAxisDates.size(); i++) {
+			series2.getData().add(new XYChart.Data<>(xAxisDates.get(i), yAxisDeadline.get(i)));
+		}
+
+		lineChart.getData().add(series2);
+
+		StackPane root = new StackPane();
+		root.getChildren().addAll(barChart, lineChart);
+		scene = new Scene(root, 800, 600);
+
+		return scene;
+	}
 }

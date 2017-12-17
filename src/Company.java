@@ -204,7 +204,7 @@ public class Company implements Serializable{
     		for (Integer taskId : project.getTasks()) {
     			Task task = taskIdMap.get(taskId);
     			if (!task.isComplete()) {
-    				taskHoursLeft++;
+    				taskHoursLeft += task.getEstimatedHours();
     			}
     		}
     		// fill in any gaps in the dates

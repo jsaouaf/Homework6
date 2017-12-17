@@ -50,6 +50,7 @@ public class Project implements Serializable{
         actualEndDate = LocalDate.MAX;
         
         taskHoursLog = new TreeMap<>();
+        taskHoursLog.put(LocalDate.now(), 0);
     }
     
     /**
