@@ -433,6 +433,9 @@ public class DashboardController2 {
 		}
 	}
 
+	/**
+	 * This method displays an alert box warning when the necessary options haven't been selected to perform an action.
+	 */
 	public void noSelectionWarning(){
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Warning");
