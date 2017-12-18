@@ -28,8 +28,6 @@ public class AddProjectController {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Complete required fields");
 			alert.setHeaderText("Please enter all required fields.");
-			//alert.setContentText("I have a great message for you!");
-
 			alert.showAndWait();
 		} else {
 			Company.getInstance().newProject(projectName.getText(), deadline.getValue());

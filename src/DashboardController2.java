@@ -384,6 +384,10 @@ public class DashboardController2 {
 		}
 	}
 
+	/**
+	 * This method completes the project and updates the project listview accordingly.
+	 * @param event
+	 */
 	public void completeProjectClicked(ActionEvent event){
 		projects.get(selectedProjectId).completeProject();
 		projectNames.set(selectedProjectIndex, "Completed - ID: " + (selectedProjectIndex + 1));
