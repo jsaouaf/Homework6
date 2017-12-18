@@ -18,11 +18,13 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -38,6 +40,7 @@ public class DashboardController2 {
 	private LinkedHashMap<Integer, Task> tasks;
 	private LinkedHashMap<Integer, Employee> employees;
 	private Integer selectedProjectId;
+	private Integer selectedProjectIndex;
 	private Integer selectedTaskId;
 	private Integer selectedTaskIndex;
 
@@ -50,6 +53,8 @@ public class DashboardController2 {
 	private ArrayList<String> taskEmpsList;
 	private ObservableList<String> taskList;
 	private ArrayList<String> taskNames;
+	private ObservableList<String> projectsList;
+	private ArrayList<String> projectNames;
 	private ObservableList<String> taskBoxList;
 
 
@@ -107,12 +112,17 @@ public class DashboardController2 {
 		employees = Company.getInstance().getEmployeeIdMap();
 
 		//Create the listviews observable lists of projects names and task names
-		ArrayList<String> projectNames = new ArrayList<String>();
+		//Completed tasks and projects are still shown but marked as COMPLETED
+		projectNames = new ArrayList<String>();
 		taskNames = new ArrayList<String>();
 		ArrayList<String> employeeNames = new ArrayList<String>();
 
 		for (Integer i: projects.keySet()){
-			projectNames.add(projects.get(i).getName() + " (ID: " + i + ")");
+			if(!projects.get(i).isActive()){
+				projectNames.add("COMPLETED: " + projects.get(i).getName() + " (ID: " + i + ")");
+			} else {
+				projectNames.add(projects.get(i).getName() + " (ID: " + i + ")");
+			}
 		}
 
 		for (Integer i: tasks.keySet()){
@@ -127,7 +137,7 @@ public class DashboardController2 {
 			employeeNames.add(employees.get(i).getName() + " (ID: " + i + ")");
 		}
 
-		ObservableList<String> projectsList = FXCollections.observableArrayList(projectNames);
+		projectsList = FXCollections.observableArrayList(projectNames);
 		ObservableList<String> employeesList = FXCollections.observableArrayList(employeeNames);
 		taskList = FXCollections.observableArrayList(taskNames);
 		projectListView.setItems(projectsList);
@@ -142,6 +152,7 @@ public class DashboardController2 {
 		//Displays project summary when project selected from listview, along with lists of employees and tasks
 		projectListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 		selectedProjectId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
+		selectedProjectIndex = projectListView.getSelectionModel().getSelectedIndex();
 		if (projects.keySet().contains(selectedProjectId)){
 			Project selectedProject = projects.get(selectedProjectId);
 			String nameText = selectedProject.getName();
@@ -360,10 +371,23 @@ public class DashboardController2 {
 	 * @param event Complete Task button clicked in task manager
 	 */
 	public void completeTaskClicked(ActionEvent event){
-		int hours = Integer.parseInt(hoursToCompleteTask.getText());
-		tasks.get(selectedTaskId).completeTask(hours);
-		taskNames.set(selectedTaskIndex, "Completed - ID: " + (selectedTaskIndex+1));
-		updateTasksListView();
+		if(hoursToCompleteTask.getText().equals("")){
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Complete required fields");
+			alert.setHeaderText("Please enter hours to complete task.");
+			alert.showAndWait();
+		} else {
+			int hours = Integer.parseInt(hoursToCompleteTask.getText());
+			tasks.get(selectedTaskId).completeTask(hours);
+			taskNames.set(selectedTaskIndex, "Completed - ID: " + (selectedTaskIndex+1));
+			updateTasksListView();
+		}
+	}
+
+	public void completeProjectClicked(ActionEvent event){
+		projects.get(selectedProjectId).completeProject();
+		projectNames.set(selectedProjectIndex, "Completed - ID: " + (selectedProjectIndex + 1));
+		updateProjectsListView();
 	}
 
 	/**
@@ -380,6 +404,14 @@ public class DashboardController2 {
 	public void updateTasksListView(){
 		taskList = FXCollections.observableArrayList(taskNames);
 		tasksListView.setItems(taskList);
+	}
+
+	/**
+	 * This method is used to update the listview of all projects.
+	 */
+	public void updateProjectsListView(){
+		projectsList = FXCollections.observableArrayList(projectNames);
+		projectListView.setItems(projectsList);
 	}
 
 	/**
@@ -406,6 +438,11 @@ public class DashboardController2 {
 		primaryStage.show();
 	}
 
+	/**
+	 * This method creates the scene for a burndown chart to display project analysis.
+	 * @param projectId ID of selected project
+	 * @return scene
+	 */
 	public Scene burndownChart(int projectId) {
 		Scene scene;
 		Project project = projects.get(projectId);
