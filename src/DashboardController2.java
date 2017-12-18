@@ -412,7 +412,7 @@ public class DashboardController2 {
 				alert.showAndWait();
 			} else {
 				int hours = Integer.parseInt(hoursToCompleteTask.getText());
-				tasks.get(selectedTaskId).completeTask(hours);
+				Company.getInstance().completeTaskAndUpdate(selectedTaskId, hours);
 				taskNames.set(selectedTaskIndex, "Completed - ID: " + (selectedTaskIndex+1));
 				updateTasksListView();
 			}
