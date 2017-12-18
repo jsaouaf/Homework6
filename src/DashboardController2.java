@@ -229,7 +229,7 @@ public class DashboardController2 {
 	public void analysisClicked(ActionEvent event){
 		// Update task hours log
 		Company.getInstance().updateTaskHoursLog();
-		
+
 		// display burndown chart
 		Stage primaryStage =  (Stage) ((Node) event.getSource()).getScene().getWindow();
 		primaryStage.setTitle("Project Analysis");
@@ -280,7 +280,7 @@ public class DashboardController2 {
 	 */
 	public void removeTaskClicked(ActionEvent event){
 		projectTasksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			int selectedProjectTaskId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
+			Integer selectedProjectTaskId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
 			Company.getInstance().removeProjectFromTask(selectedProjectTaskId, selectedProjectId);
 					});
 		int selectedProjectTaskIndex = projectTasksListView.getSelectionModel().getSelectedIndex();
@@ -310,6 +310,8 @@ public class DashboardController2 {
 			Integer selectedEmployeeId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
 			Company.getInstance().removeEmployeeFromProject(selectedEmployeeId, selectedProjectId);
 		});
+		int selectedProjectEmployeeIndex = projectEmployeesListView.getSelectionModel().getSelectedIndex();
+		selectedProjectEmployees.remove(selectedProjectEmployeeIndex);
 		projEmpsList = FXCollections.observableArrayList(selectedProjectEmployees);
 		projectEmployeesListView.setItems(projEmpsList);
 	}
@@ -445,7 +447,7 @@ public class DashboardController2 {
 		ArrayList<Double> yAxisDeadline = new ArrayList<>();
 		Double initialHours = (double) yAxisHours.get(0);
 		yAxisDeadline.add(initialHours);
-		
+
 		for (int i = 1; i < projectDuration; i++) {
 			yAxisDeadline.add(initialHours - i * initialHours / projectDuration);
 		}

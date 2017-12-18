@@ -16,22 +16,14 @@ public class AddProjectController {
 	private TextField projectName;
 
 	@FXML
-	private DatePicker startDate;
-
-	@FXML
 	private DatePicker targetEndDate;
 
 	@FXML
 	private DatePicker deadline;
 
-//Need to handle changing the start/end/deadline dates in this method still if user chooses to enter them
 	public void addProjectClicked(ActionEvent event) throws IOException{
 
 		Company.getInstance().newProject(projectName.getText(), deadline.getValue());
-
-//		if(!startDate.getText().isEmpty()){
-//
-//		}
 
 		Stage primaryStage =  (Stage) ((Node) event.getSource()).getScene().getWindow();
 		primaryStage.setTitle("Syme");
