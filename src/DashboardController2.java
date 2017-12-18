@@ -150,51 +150,57 @@ public class DashboardController2 {
 
 		//Add listener to listen for which project selected
 		//Displays project summary when project selected from listview, along with lists of employees and tasks
-		projectListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-		selectedProjectId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
-		selectedProjectIndex = projectListView.getSelectionModel().getSelectedIndex();
-		if (projects.keySet().contains(selectedProjectId)){
-			Project selectedProject = projects.get(selectedProjectId);
-			String nameText = selectedProject.getName();
-			String startDateText = selectedProject.getStartDate().toString();
-			String deadlineText = selectedProject.getDeadline().toString();
 
-			nameLbl.setText(nameText);
-			startDateLbl.setText(startDateText);
-			deadlineLbl.setText(deadlineText);
 
-			selectedProjectEmployees = new ArrayList<String>();
-			selectedProjectTasks = new ArrayList<String>();
-			HashSet<Integer> projEmps = selectedProject.getEmployees();
-			HashSet<Integer> projTasks = selectedProject.getTasks();
+			projectListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 
-			for (Integer e : projEmps){
-				selectedProjectEmployees.add(employees.get(e).getName() + " (ID: " + e + ")");
-			}
+			selectedProjectId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
 
-			for (Integer t : projTasks){
-				if(!(tasks.get(t).isComplete())){
-					selectedProjectTasks.add(tasks.get(t).getName() + " (ID: " + t + ")");
+			selectedProjectIndex = projectListView.getSelectionModel().getSelectedIndex();
+			if (projects.keySet().contains(selectedProjectId)){
+				Project selectedProject = projects.get(selectedProjectId);
+				String nameText = selectedProject.getName();
+				String startDateText = selectedProject.getStartDate().toString();
+				String deadlineText = selectedProject.getDeadline().toString();
+
+				nameLbl.setText(nameText);
+				startDateLbl.setText(startDateText);
+				deadlineLbl.setText(deadlineText);
+
+				selectedProjectEmployees = new ArrayList<String>();
+				selectedProjectTasks = new ArrayList<String>();
+				HashSet<Integer> projEmps = selectedProject.getEmployees();
+				HashSet<Integer> projTasks = selectedProject.getTasks();
+
+				for (Integer e : projEmps){
+					selectedProjectEmployees.add(employees.get(e).getName() + " (ID: " + e + ")");
 				}
+
+				for (Integer t : projTasks){
+					if(!(tasks.get(t).isComplete())){
+						selectedProjectTasks.add(tasks.get(t).getName() + " (ID: " + t + ")");
+					}
+				}
+
+				projEmpsList = FXCollections.observableArrayList(selectedProjectEmployees);
+				projTasksList = FXCollections.observableArrayList(selectedProjectTasks);
+
+				projectEmployeesListView.setItems(projEmpsList);
+				projectTasksListView.setItems(projTasksList);
 			}
 
-			projEmpsList = FXCollections.observableArrayList(selectedProjectEmployees);
-			projTasksList = FXCollections.observableArrayList(selectedProjectTasks);
+		   nameLbl.setVisible(true);
+		   startDateLbl.setVisible(true);
+		   deadlineLbl.setVisible(true);
 
-			projectEmployeesListView.setItems(projEmpsList);
-			projectTasksListView.setItems(projTasksList);
-		}
-
-	   nameLbl.setVisible(true);
-	   startDateLbl.setVisible(true);
-	   deadlineLbl.setVisible(true);
-
-		});
+			});
 
 		//Adds listener to listen for which task is selected in task manager
 		//Displays task-specific information when task selected from listview
 		tasksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+
 			selectedTaskId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
+
 			selectedTaskIndex = tasksListView.getSelectionModel().getSelectedIndex();
 			if (tasks.keySet().contains(selectedTaskId)){
 				Task selectedTask = tasks.get(selectedTaskId);
@@ -276,13 +282,15 @@ public class DashboardController2 {
 	 * @param event Add Task button clicked in project manager section
 	 */
 	public void addTaskToProjectClicked(ActionEvent event){
-		int selectedBoxTaskId = Integer.parseInt(taskBox.getValue().toString().replaceAll("[^0-9]", ""));
-		Company.getInstance().setProjectForTask(selectedBoxTaskId, selectedProjectId);
-		selectedProjectTasks.add(tasks.get(selectedBoxTaskId).getName() + " (ID: " + selectedBoxTaskId + ")");
-		//taskBoxList.set(selectedTaskIndex, "Already Assigned Task");
-		//taskBox.setItems(taskBoxList);
-		projTasksList = FXCollections.observableArrayList(selectedProjectTasks);
-		projectTasksListView.setItems(projTasksList);
+		if (selectedProjectId == null){
+			noSelectionWarning();
+		} else {
+			int selectedBoxTaskId = Integer.parseInt(taskBox.getValue().toString().replaceAll("[^0-9]", ""));
+			Company.getInstance().setProjectForTask(selectedBoxTaskId, selectedProjectId);
+			selectedProjectTasks.add(tasks.get(selectedBoxTaskId).getName() + " (ID: " + selectedBoxTaskId + ")");
+			projTasksList = FXCollections.observableArrayList(selectedProjectTasks);
+			projectTasksListView.setItems(projTasksList);
+		}
 	}
 
 	/**
@@ -290,13 +298,19 @@ public class DashboardController2 {
 	 * @param event Remove button clicked for selected task in listview for project
 	 */
 	public void removeTaskClicked(ActionEvent event){
-		projectTasksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			Integer selectedProjectTaskId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
-			Company.getInstance().removeProjectFromTask(selectedProjectTaskId, selectedProjectId);
-					});
-		int selectedProjectTaskIndex = projectTasksListView.getSelectionModel().getSelectedIndex();
-		selectedProjectTasks.remove(selectedProjectTaskIndex);
-		updateProjTasksListView();
+		int selectedProjectTaskIndex = -1;
+		selectedProjectTaskIndex = projectTasksListView.getSelectionModel().getSelectedIndex();
+
+		if (selectedProjectTaskIndex == -1 || selectedProjectId == null){
+			noSelectionWarning();
+		} else {
+			projectTasksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+				Integer selectedProjectTaskId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
+				Company.getInstance().removeProjectFromTask(selectedProjectTaskId, selectedProjectId);
+						});
+			selectedProjectTasks.remove(selectedProjectTaskIndex);
+			updateProjTasksListView();
+		}
 	}
 
 	/**
@@ -304,11 +318,15 @@ public class DashboardController2 {
 	 * @param event Add Employee button clicked
 	 */
 	public void addEmployeeClicked(ActionEvent event){
-		Integer selectedEmployeeId = Integer.parseInt(employeeBox.getValue().toString().replaceAll("[^0-9]", ""));
-		Company.getInstance().addEmployeeToProject(selectedEmployeeId, selectedProjectId);
-		selectedProjectEmployees.add(employees.get(selectedEmployeeId).getName() + " (ID: " + selectedEmployeeId + ")");
-		projEmpsList = FXCollections.observableArrayList(selectedProjectEmployees);
-		projectEmployeesListView.setItems(projEmpsList);
+		if (selectedProjectId == null){
+			noSelectionWarning();
+		} else {
+			Integer selectedEmployeeId = Integer.parseInt(employeeBox.getValue().toString().replaceAll("[^0-9]", ""));
+			Company.getInstance().addEmployeeToProject(selectedEmployeeId, selectedProjectId);
+			selectedProjectEmployees.add(employees.get(selectedEmployeeId).getName() + " (ID: " + selectedEmployeeId + ")");
+			projEmpsList = FXCollections.observableArrayList(selectedProjectEmployees);
+			projectEmployeesListView.setItems(projEmpsList);
+		}
 	}
 
 	/**
@@ -317,14 +335,19 @@ public class DashboardController2 {
 	 * @param event
 	 */
 	public void removeEmployeeClicked(ActionEvent event){
-		projectEmployeesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			Integer selectedEmployeeId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
-			Company.getInstance().removeEmployeeFromProject(selectedEmployeeId, selectedProjectId);
-		});
-		int selectedProjectEmployeeIndex = projectEmployeesListView.getSelectionModel().getSelectedIndex();
-		selectedProjectEmployees.remove(selectedProjectEmployeeIndex);
-		projEmpsList = FXCollections.observableArrayList(selectedProjectEmployees);
-		projectEmployeesListView.setItems(projEmpsList);
+		int selectedProjectEmployeeIndex = -1;
+		selectedProjectEmployeeIndex = projectEmployeesListView.getSelectionModel().getSelectedIndex();
+		if (selectedProjectEmployeeIndex == -1 || selectedProjectId == null){
+			noSelectionWarning();
+		} else {
+			projectEmployeesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+				Integer selectedEmployeeId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
+				Company.getInstance().removeEmployeeFromProject(selectedEmployeeId, selectedProjectId);
+			});
+			selectedProjectEmployees.remove(selectedProjectEmployeeIndex);
+			projEmpsList = FXCollections.observableArrayList(selectedProjectEmployees);
+			projectEmployeesListView.setItems(projEmpsList);
+		}
 	}
 
 	/**
@@ -348,11 +371,15 @@ public class DashboardController2 {
 	 * @param event Remove Employee button clicked in Task Manager
 	 */
 	public void removeEmpFromTaskClicked(ActionEvent event){
-		taskEmployeesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			Integer selectedEmployeeId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
-			Company.getInstance().removeEmployeeFromTask(selectedTaskId, selectedEmployeeId);
-		});
-		updateTaskEmployeesListView();
+		if (selectedTaskId == null){
+			noSelectionWarning();
+		} else {
+			taskEmployeesListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+				Integer selectedEmployeeId = Integer.parseInt(newValue.replaceAll("[^0-9]", ""));
+				Company.getInstance().removeEmployeeFromTask(selectedTaskId, selectedEmployeeId);
+			});
+			updateTaskEmployeesListView();
+		}
 	}
 
 	/**
@@ -360,10 +387,14 @@ public class DashboardController2 {
 	 * @param event Assign button clicked in task manager
 	 */
 	public void assignEmpToTaskClicked(ActionEvent event){
-		Integer selectedEmployeeId = Integer.parseInt(taskEmployeesBox.getValue().toString().replaceAll("[^0-9]", ""));
-		Company.getInstance().addEmployeeToTask(selectedTaskId, selectedEmployeeId);
-		taskEmpsList.add(employees.get(selectedEmployeeId).getName() + " (ID " + selectedEmployeeId + ")");
-		updateTaskEmployeesListView();
+		if (selectedTaskId == null){
+			noSelectionWarning();
+		} else {
+			Integer selectedEmployeeId = Integer.parseInt(taskEmployeesBox.getValue().toString().replaceAll("[^0-9]", ""));
+			Company.getInstance().addEmployeeToTask(selectedTaskId, selectedEmployeeId);
+			taskEmpsList.add(employees.get(selectedEmployeeId).getName() + " (ID " + selectedEmployeeId + ")");
+			updateTaskEmployeesListView();
+		}
 	}
 
 	/**
@@ -371,16 +402,20 @@ public class DashboardController2 {
 	 * @param event Complete Task button clicked in task manager
 	 */
 	public void completeTaskClicked(ActionEvent event){
-		if(hoursToCompleteTask.getText().equals("")){
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Complete required fields");
-			alert.setHeaderText("Please enter hours to complete task.");
-			alert.showAndWait();
+		if (selectedTaskId == null){
+			noSelectionWarning();
 		} else {
-			int hours = Integer.parseInt(hoursToCompleteTask.getText());
-			tasks.get(selectedTaskId).completeTask(hours);
-			taskNames.set(selectedTaskIndex, "Completed - ID: " + (selectedTaskIndex+1));
-			updateTasksListView();
+			if(hoursToCompleteTask.getText().equals("")){
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Complete required fields");
+				alert.setHeaderText("Please enter hours to complete task.");
+				alert.showAndWait();
+			} else {
+				int hours = Integer.parseInt(hoursToCompleteTask.getText());
+				tasks.get(selectedTaskId).completeTask(hours);
+				taskNames.set(selectedTaskIndex, "Completed - ID: " + (selectedTaskIndex+1));
+				updateTasksListView();
+			}
 		}
 	}
 
@@ -389,9 +424,20 @@ public class DashboardController2 {
 	 * @param event
 	 */
 	public void completeProjectClicked(ActionEvent event){
-		projects.get(selectedProjectId).completeProject();
-		projectNames.set(selectedProjectIndex, "Completed - ID: " + (selectedProjectIndex + 1));
-		updateProjectsListView();
+		if (selectedProjectId == null){
+			noSelectionWarning();
+		} else {
+			projects.get(selectedProjectId).completeProject();
+			projectNames.set(selectedProjectIndex, "Completed - ID: " + (selectedProjectIndex + 1));
+			updateProjectsListView();
+		}
+	}
+
+	public void noSelectionWarning(){
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Warning");
+		alert.setHeaderText("Please make a selection in corresponding list to perform action.");
+		alert.showAndWait();
 	}
 
 	/**
